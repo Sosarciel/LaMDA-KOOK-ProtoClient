@@ -40,13 +40,13 @@ void (async () => {
 
             if (e.content === "voice") {
                 const data = await client.apiSender.uploadMedia(testWav);
-                const card: CardMessage = [{
+                const card = [{
                     type: 'card',
                     modules: [{
                         type: 'audio',
                         src: data?.data.url!,
                     }]
-                }];
+                }] as const satisfies CardMessage;
                 client.apiSender.sendPrivateMsg({
                     target_id: e.author_id,
                     type: 10,
