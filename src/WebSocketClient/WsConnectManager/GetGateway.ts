@@ -1,0 +1,28 @@
+import { expRepeatify } from "../Utils";
+import { EXP_MAX_TIME, ConnectStatus } from "./Interface";
+import { sleep, SLogger, Terminated } from "@zwa73/utils";
+import { WsConnectManager } from "./WsConnectManager";
+
+
+
+export async function ProcGetGateway(client:WsConnectManager):Promise<ConnectStatus>{
+    const result = await expRepeatify(
+        EXP_MAX_TIME, Infinity,
+        ()=>getGateway(client),
+        v=>typeof v == 'string',
+    );
+    if(result == Terminated){
+        SLogger.error(`获取网关失败 重试到极限 客户端被放弃`);
+        return "Terminate"
+    }
+    client.gatewayUrl = result;
+    SLogger.info(`获取网关成功:`);
+    return "ConnectGateway";
+}
+
+async function getGateway(client:WsConnectManager) {
+    await sleep(1000);
+    SLogger.info(`正在获取网关`);
+    const result = await client.sender.getGateway();
+    return result?.data.url!;
+}
