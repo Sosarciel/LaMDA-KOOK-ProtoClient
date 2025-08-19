@@ -1,4 +1,4 @@
-import { sleep, Terminated, Timeout } from "@zwa73/utils";
+import { Failed, sleep, Success, Terminated, Timeout, UtilFT, UtilFunc } from "@zwa73/utils";
 import { WebSocket } from "ws";
 
 
@@ -71,12 +71,15 @@ export const expRepeatify = async <T extends ()=>Promise<any>> (
     procfn:T,
     verfyfn:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
 ):Promise<ReturnType<T>|Terminated>=>{
-    for(let count = 0;count<maxCount;count++){
-        if(count!=0)
-            await sleep(Math.min(maxTime,Math.pow(2,count))*1000);
-        const result = await procfn();
-        if(verfyfn(result)) return result;
-    }
+    const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
+        procfn, v=>verfyfn(v) ? Success : Failed,{
+            tryDelay: 2000,
+            expBackoff: true,
+            count: maxCount,
+            expBackoffMax: maxTime
+    });
+    if(result.completed!=undefined)
+        return result.completed;
     return Terminated;
 }
 
@@ -88,10 +91,12 @@ export const seqRepeatify = async <T extends ()=>Promise<any>> (
     procfn:T,
     verfyfn:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
 ):Promise<ReturnType<T>|Terminated>=>{
-    for (const time of timeseq) {
-        await sleep(time*1000);
-        const result = await procfn();
-        if(verfyfn(result)) return result;
-    }
+    const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
+        procfn, v=>verfyfn(v) ? Success : Failed,{
+            tryDelay: timeseq,
+            count: timeseq.length+1,
+    });
+    if(result.completed!=undefined)
+        return result.completed;
     return Terminated;
 }

@@ -15,8 +15,7 @@ export async function ProcConnectGateway(client:WsConnectManager):Promise<Connec
     client.ws = new WebSocket(gatewayUrl);
     const result = await expRepeatify(EXP_MAX_TIME,2,
         ()=>tryConnect(client.ws),
-        (v)=>v==Success,
-    );
+        v=>v==Success);
 
     return match(result, {
         [Terminated]():ConnectStatus{

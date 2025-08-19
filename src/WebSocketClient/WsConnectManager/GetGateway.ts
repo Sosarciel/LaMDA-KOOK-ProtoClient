@@ -6,11 +6,9 @@ import { WsConnectManager } from "./WsConnectManager";
 
 
 export async function ProcGetGateway(client:WsConnectManager):Promise<ConnectStatus>{
-    const result = await expRepeatify(
-        EXP_MAX_TIME, Infinity,
+    const result = await expRepeatify(EXP_MAX_TIME,Infinity,
         ()=>getGateway(client),
-        v=>typeof v == 'string',
-    );
+        v=>typeof v == 'string');
     if(result == Terminated){
         SLogger.error(`获取网关失败 重试到极限 客户端被放弃`);
         return "Terminate"
