@@ -84,17 +84,19 @@ export const expRepeatify = async <T extends ()=>Promise<any>> (
 }
 
 /**以数组中的时间作为延迟  
- * 第一次使用[0]
+ * 第一次尝试前将会等待timeseq[0]秒
  */
 export const seqRepeatify = async <T extends ()=>Promise<any>> (
     timeseq:number[],
     procfn:T,
     verfyfn:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
 ):Promise<ReturnType<T>|Terminated>=>{
+    const [fst,...rest] = timeseq.map(v=>v*1000);
+    await sleep(fst);
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: timeseq,
-            count: timeseq.length+1,
+            tryDelay: rest,
+            count: timeseq.length,
     });
     if(result.completed!=undefined)
         return result.completed;
