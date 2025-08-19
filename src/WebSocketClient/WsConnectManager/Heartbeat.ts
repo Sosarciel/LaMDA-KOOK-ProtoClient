@@ -35,6 +35,7 @@ async function heartbeat(client:WsConnectManager){
     const idlePromise = new Promise<Rtn>((resolve,reject)=>breakIdle = resolve);
     client.heartbeatEvent = setInterval(async ()=>{
         const result = await expRepeatify(
+            `检查心跳`,"verbose",
             EXP_MAX_TIME,2,
             ()=>checkHeartbeat(client),
             v=>v==Success

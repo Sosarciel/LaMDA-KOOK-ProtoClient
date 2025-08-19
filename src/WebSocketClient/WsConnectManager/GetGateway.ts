@@ -6,7 +6,9 @@ import { WsConnectManager } from "./WsConnectManager";
 
 
 export async function ProcGetGateway(client:WsConnectManager):Promise<ConnectStatus>{
-    const result = await expRepeatify(EXP_MAX_TIME,Infinity,
+    const result = await expRepeatify(
+        `获取网关`,"info",
+        EXP_MAX_TIME,Infinity,
         ()=>getGateway(client),
         v=>typeof v == 'string');
     if(result == Terminated){

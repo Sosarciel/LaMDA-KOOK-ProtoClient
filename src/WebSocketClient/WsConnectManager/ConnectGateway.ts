@@ -13,7 +13,9 @@ export async function ProcConnectGateway(client:WsConnectManager):Promise<Connec
     await client.cce.onreset();
     await client.cce.onclose();
     client.ws = new WebSocket(gatewayUrl);
-    const result = await expRepeatify(EXP_MAX_TIME,2,
+    const result = await expRepeatify(
+        `连接网关`,"info",
+        EXP_MAX_TIME,2,
         ()=>tryConnect(client.ws),
         v=>v==Success);
 
@@ -43,7 +45,9 @@ export async function ProcReconnect(client:WsConnectManager):Promise<ConnectStat
     })}`;
     await client.cce.onclose();
     client.ws = new WebSocket(reconnectUrl);
-    const result = await seqRepeatify([8,16],
+    const result = await seqRepeatify(
+        `重连网关`,"info",
+        [8,16],
         ()=>tryConnect(client.ws),
         v=>v==Success,
     );
