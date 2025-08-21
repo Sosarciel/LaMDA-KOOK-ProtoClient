@@ -1,14 +1,13 @@
 import { JObject, QueryRequestData, UtilHttp } from "@zwa73/utils";
 import { Endpoint, getAuthorization, KookBaseUrl } from "../Define";
 import { GatewayResp, SendGroupMessageReqData, SendGroupMessageRespData, SendPrivateMessageReqData, SendPrivateMessageRespData, UploadMediaRespData } from "./Interface";
-import FormData from 'form-data';
-import fs from 'fs';
 
 export class KookAPISender{
     constructor(private token:string){}
 
     private async postapi(url:string,obj?:JObject){
-        const opt = {
+        return UtilHttp.httpsPostJson().option({
+            logLevel:'verbose',
             hostname:KookBaseUrl,
             port:443,
             path:url,
@@ -16,12 +15,11 @@ export class KookAPISender{
                 "Content-Type":"application/json",
                 "Authorization":getAuthorization('Bot',this.token),
             }
-        }
-
-        return UtilHttp.httpsPostJson().option(opt).once({json:obj});
+        }).once({json:obj});
     }
     private async getapi(url:string,obj?:QueryRequestData){
         return UtilHttp.httpsGetJson().sendQuery().option({
+            logLevel:'verbose',
             hostname:KookBaseUrl,
             path:url,
             port:443,
@@ -36,6 +34,7 @@ export class KookAPISender{
     async uploadMedia(filepath:string){
         const res =  await UtilHttp.httpsPostJson()
         .option({
+            logLevel:'verbose',
             hostname:KookBaseUrl,
             path:Endpoint.UploadMedia,
             port:443,
