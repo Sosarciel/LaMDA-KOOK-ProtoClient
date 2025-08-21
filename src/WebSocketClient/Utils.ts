@@ -1,5 +1,6 @@
 import { Failed, LogLevel, sleep, Success, Terminated, Timeout, UtilFT, UtilFunc } from "@zwa73/utils";
 import { WebSocket } from "ws";
+import { LogPrefix } from "../Constant";
 
 
 
@@ -75,7 +76,7 @@ export const expRepeatify = async <T extends ()=>Promise<any>> (
 ):Promise<ReturnType<T>|Terminated>=>{
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: 2000,logFlag:`KOOK-ProtoClient ${logFlag}`,logLevel,
+            tryDelay: 2000,logFlag:`${LogPrefix}${logFlag}`,logLevel,
             expBackoff: true,
             count: maxCount,
             expBackoffMax: maxTime
@@ -99,7 +100,7 @@ export const seqRepeatify = async <T extends ()=>Promise<any>> (
     await sleep(fst);
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: rest, logFlag:`KOOK-ProtoClient ${logFlag}`,logLevel,
+            tryDelay: rest, logFlag:`${LogPrefix}${logFlag}`,logLevel,
             count: timeseq.length,
     });
     if(result.completed!=undefined)

@@ -5,6 +5,7 @@ import { WsConnectManager } from "./WsConnectManager";
 import { WebSocket } from "ws";
 import qs from 'querystring';
 import { AnySignaling } from "@/src/Event";
+import { LogPrefix } from "@/src/Constant";
 
 
 export async function ProcConnectGateway(client:WsConnectManager):Promise<ConnectStatus>{
@@ -21,15 +22,15 @@ export async function ProcConnectGateway(client:WsConnectManager):Promise<Connec
 
     return match(result, {
         [Terminated]():ConnectStatus{
-            SLogger.warn(`KOOK-ProtoClient 连接网关失败 重试到极限 回退至 GetGateway`);
+            SLogger.warn(`${LogPrefix}连接网关失败 重试到极限 回退至 GetGateway`);
             return "GetGateway";
         },
         async [Success]():Promise<ConnectStatus>{
-            SLogger.verbose(`KOOK-ProtoClient 连接网关成功`);
+            SLogger.verbose(`${LogPrefix}连接网关成功`);
             return await ProcAwaitHello(client);
         },
         [Failed]():ConnectStatus{
-            SLogger.warn(`KOOK-ProtoClient 连接网关失败 重试到极限 回退至 GetGateway`);
+            SLogger.warn(`${LogPrefix}连接网关失败 重试到极限 回退至 GetGateway`);
             return "GetGateway";
         },
     });
@@ -54,15 +55,15 @@ export async function ProcReconnect(client:WsConnectManager):Promise<ConnectStat
 
     return match(result, {
         [Terminated]():ConnectStatus{
-            SLogger.warn(`KOOK-ProtoClient 重连失败 重试到极限 回退至 GetGateway`);
+            SLogger.warn(`${LogPrefix}重连失败 重试到极限 回退至 GetGateway`);
             return "GetGateway";
         },
         async [Success]():Promise<ConnectStatus>{
-            SLogger.verbose(`KOOK-ProtoClient 重连成功`);
+            SLogger.verbose(`${LogPrefix}重连成功`);
             return await ProcAwaitHello(client);
         },
         [Failed]():ConnectStatus{
-            SLogger.warn(`KOOK-ProtoClient 重连失败 重试到极限 回退至 GetGateway`);
+            SLogger.warn(`${LogPrefix}重连失败 重试到极限 回退至 GetGateway`);
             return "GetGateway";
         },
     });
@@ -70,9 +71,9 @@ export async function ProcReconnect(client:WsConnectManager):Promise<ConnectStat
 
 
 async function tryConnect(ws?:WebSocket){
-    SLogger.verbose(`KOOK-ProtoClient 正在连接网关`);
+    SLogger.verbose(`${LogPrefix}正在连接网关`);
     if(ws==null){
-        SLogger.error(`KOOK-ProtoClient tryConnect 错误 ws不存在`);
+        SLogger.error(`${LogPrefix}tryConnect 错误 ws不存在`);
         return Failed;
     }
     return await raceEvent(ws, [
@@ -85,15 +86,15 @@ async function ProcAwaitHello(client:WsConnectManager):Promise<ConnectStatus>{
     const result = await awaitHello(client);
     return match(result, {
         [Timeout]():ConnectStatus{
-            SLogger.warn(`KOOK-ProtoClient 等待hello包失败 超时 回退至 GetGateway`);
+            SLogger.warn(`${LogPrefix}等待hello包失败 超时 回退至 GetGateway`);
             return "GetGateway";
         },
         [Success]():ConnectStatus{
-            SLogger.verbose(`KOOK-ProtoClient 等待hello包成功`);
+            SLogger.verbose(`${LogPrefix}等待hello包成功`);
             return "Heartbeat";
         },
         [Failed]():ConnectStatus{
-            SLogger.warn(`KOOK-ProtoClient 等待hello包成功 出现错误 回退至 GetGateway`);
+            SLogger.warn(`${LogPrefix}等待hello包成功 出现错误 回退至 GetGateway`);
             return "GetGateway";
         },
     });
@@ -114,13 +115,13 @@ async function awaitHello(client:WsConnectManager){
                     return Success;
                 }
                 else {
-                    SLogger.warn(`KOOK-ProtoClient SignalingHello 错误:${jsonData.d.code}`,`rawdata:${strdata}`);
+                    SLogger.warn(`${LogPrefix}SignalingHello 错误:${jsonData.d.code}`,`rawdata:${strdata}`);
                     return Failed;
                 }
             }
         } catch (error) {
             console.log(error);
-            SLogger.warn('KOOK-ProtoClient SignalingHello 错误',error,`rawdata:${strdata}`); // 添加错误处理逻辑
+            SLogger.warn('${LogPrefix}SignalingHello 错误',error,`rawdata:${strdata}`); // 添加错误处理逻辑
         }
     })
 }

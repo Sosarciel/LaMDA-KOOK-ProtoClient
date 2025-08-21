@@ -6,6 +6,7 @@ import { ProcConnectGateway, ProcReconnect } from "./ConnectGateway";
 import { ProcHeartbeat } from "./Heartbeat";
 import { KookAPISender } from "@/src/RESTApi";
 import { AnySignaling } from "@/src/Event";
+import { LogPrefix } from "@/src/Constant";
 
 
 type ClientConnectEvent = {
@@ -72,7 +73,7 @@ export class WsConnectManager{
                     Terminate       :()=>"Terminate" as const,
                 });
             }catch(e){
-                SLogger.error(`KOOK-ProtoClient WsConnectManager.start 处理状态时发生错误 ${e}`,'重置为 GetGateway');
+                SLogger.error(`${LogPrefix}WsConnectManager.start 处理状态时发生错误 ${e}`,'重置为 GetGateway');
                 this.currStatus = "GetGateway";
             }
         }
