@@ -1,6 +1,6 @@
 import { JObject, QueryRequestData, UtilHttp } from "@zwa73/utils";
 import { Endpoint, getAuthorization, KookBaseUrl } from "../Define";
-import { GatewayResp, SendGroupMessageReqData, SendPrivateMessageReqData, SendPrivateMessageRespData, UploadMediaRespData } from "./Interface";
+import { GatewayResp, SendGroupMessageReqData, SendGroupMessageRespData, SendPrivateMessageReqData, SendPrivateMessageRespData, UploadMediaRespData } from "./Interface";
 import FormData from 'form-data';
 import fs from 'fs';
 
@@ -58,7 +58,7 @@ export class KookAPISender{
     /**发送频道消息 */
     async sendChannelMsg(data:SendGroupMessageReqData){
         const res = await this.postapi(Endpoint.GroupMessage.Create,data);
-        return res?.data as SendPrivateMessageRespData|undefined;
+        return res?.data as SendGroupMessageRespData|undefined;
     }
 
     /**获取自身数据 */

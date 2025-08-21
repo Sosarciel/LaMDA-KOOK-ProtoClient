@@ -72,7 +72,7 @@ export class WsConnectManager{
                     Terminate       :()=>"Terminate" as const,
                 });
             }catch(e){
-                SLogger.error(`WsConnectManager.start 处理状态时发生错误 ${e}`,'重置为 GetGateway');
+                SLogger.error(`KOOK-ProtoClient WsConnectManager.start 处理状态时发生错误 ${e}`,'重置为 GetGateway');
                 this.currStatus = "GetGateway";
             }
         }

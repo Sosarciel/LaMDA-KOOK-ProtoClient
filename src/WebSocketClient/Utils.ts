@@ -75,7 +75,7 @@ export const expRepeatify = async <T extends ()=>Promise<any>> (
 ):Promise<ReturnType<T>|Terminated>=>{
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: 2000,logFlag,logLevel,
+            tryDelay: 2000,logFlag:`KOOK-ProtoClient ${logFlag}`,logLevel,
             expBackoff: true,
             count: maxCount,
             expBackoffMax: maxTime
@@ -99,7 +99,7 @@ export const seqRepeatify = async <T extends ()=>Promise<any>> (
     await sleep(fst);
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: rest, logFlag,logLevel,
+            tryDelay: rest, logFlag:`KOOK-ProtoClient ${logFlag}`,logLevel,
             count: timeseq.length,
     });
     if(result.completed!=undefined)
