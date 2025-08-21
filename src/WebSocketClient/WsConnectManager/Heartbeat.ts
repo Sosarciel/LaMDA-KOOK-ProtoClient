@@ -104,7 +104,7 @@ async function checkHeartbeat(client:WsConnectManager){
             const jsonData = JSON.parse(strdata) as AnySignaling;
             if(jsonData.s==3) return Success;
         }catch(err){
-            SLogger.warn('${LogPrefix}checkHeartbeat 错误',err,`rawdata:${strdata}`); // 添加错误处理逻辑
+            SLogger.warn(`${LogPrefix}checkHeartbeat 错误`,err,`rawdata:${strdata}`); // 添加错误处理逻辑
             return Failed;
         }
     });

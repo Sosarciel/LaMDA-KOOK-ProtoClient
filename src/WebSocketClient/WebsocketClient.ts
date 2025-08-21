@@ -25,7 +25,7 @@ export class KOOKWebsocketClient extends EventSystem<EventMap> {
     }
 
     async routeEvent(data:AnySignaling){
-        SLogger.verbose('${LogPrefix}routeEvent:',data);
+        SLogger.verbose(`${LogPrefix}routeEvent:`,data);
         if(data.s != 0) return;
         const ed = extractOutcome(data.d,'channel_type');
         match(ed,{

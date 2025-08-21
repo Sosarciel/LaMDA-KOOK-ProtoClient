@@ -121,7 +121,7 @@ async function awaitHello(client:WsConnectManager){
             }
         } catch (error) {
             console.log(error);
-            SLogger.warn('${LogPrefix}SignalingHello 错误',error,`rawdata:${strdata}`); // 添加错误处理逻辑
+            SLogger.warn(`${LogPrefix}SignalingHello 错误`,error,`rawdata:${strdata}`); // 添加错误处理逻辑
         }
     })
 }

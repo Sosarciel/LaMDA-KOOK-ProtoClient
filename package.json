@@ -1,6 +1,6 @@
 {
 	"name": "@sosraciel-lamda/kook-protoclient",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "kook协议客户端api",
 	"main": "dist/index.js",
 	"scripts": {
