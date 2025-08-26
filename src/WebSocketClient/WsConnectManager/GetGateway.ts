@@ -1,5 +1,5 @@
 import { expRepeatify } from "../Utils";
-import { EXP_MAX_TIME, ConnectStatus } from "./Interface";
+import { ConnectStatus } from "./Interface";
 import { sleep, SLogger, Terminated } from "@zwa73/utils";
 import { WsConnectManager } from "./WsConnectManager";
 import { LogPrefix } from "@/src/Constant";
@@ -8,8 +8,7 @@ import { LogPrefix } from "@/src/Constant";
 
 export async function ProcGetGateway(client:WsConnectManager):Promise<ConnectStatus>{
     const result = await expRepeatify(
-        `获取网关`,"info",
-        EXP_MAX_TIME,Infinity,
+        `获取网关`,"info",Infinity,
         ()=>getGateway(client),
         v=>typeof v == 'string');
     if(result == Terminated){

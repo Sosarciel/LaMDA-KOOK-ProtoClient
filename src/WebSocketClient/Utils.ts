@@ -1,6 +1,7 @@
 import { Failed, LogLevel, sleep, Success, Terminated, Timeout, UtilFT, UtilFunc } from "@zwa73/utils";
 import { WebSocket } from "ws";
 import { LogPrefix } from "../Constant";
+import { EXP_MAX_TIME, TIMEOUT_TIME } from "./WsConnectManager/Interface";
 
 
 
@@ -69,17 +70,19 @@ export function waitForMessage<T extends (data:Buffer)=>any|undefined>(
 export const expRepeatify = async <T extends ()=>Promise<any>> (
     logFlag:string,
     logLevel:LogLevel,
-    maxTime:number,
     maxCount:number,
     procfn:T,
     verfyfn:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
 ):Promise<ReturnType<T>|Terminated>=>{
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: 2000,logFlag:`${LogPrefix}${logFlag}`,logLevel,
+            tryDelay: 2000,
+            logFlag:`${LogPrefix}${logFlag}`,
+            logLevel,
             expBackoff: true,
             count: maxCount,
-            expBackoffMax: maxTime
+            expBackoffMax: EXP_MAX_TIME,
+            tryInterval: TIMEOUT_TIME
     });
     if(result.completed!=undefined)
         return result.completed;
@@ -100,8 +103,11 @@ export const seqRepeatify = async <T extends ()=>Promise<any>> (
     await sleep(fst);
     const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
         procfn, v=>verfyfn(v) ? Success : Failed,{
-            tryDelay: rest, logFlag:`${LogPrefix}${logFlag}`,logLevel,
+            tryDelay: rest,
+            logFlag:`${LogPrefix}${logFlag}`,
+            logLevel,
             count: timeseq.length,
+            tryInterval: TIMEOUT_TIME,
     });
     if(result.completed!=undefined)
         return result.completed;

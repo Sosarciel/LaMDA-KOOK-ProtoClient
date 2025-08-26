@@ -1,5 +1,5 @@
 import { expRepeatify, seqRepeatify, raceEvent, waitForMessage } from "../Utils";
-import { EXP_MAX_TIME, ConnectStatus } from "./Interface";
+import { ConnectStatus } from "./Interface";
 import { Failed, match, SLogger, Success, Terminated, Timeout } from "@zwa73/utils";
 import { WsConnectManager } from "./WsConnectManager";
 import { WebSocket } from "ws";
@@ -15,8 +15,7 @@ export async function ProcConnectGateway(client:WsConnectManager):Promise<Connec
     await client.cce.onclose();
     client.ws = new WebSocket(gatewayUrl);
     const result = await expRepeatify(
-        `连接网关`,"info",
-        EXP_MAX_TIME,2,
+        `连接网关`,"info", 2,
         ()=>tryConnect(client.ws),
         v=>v==Success);
 

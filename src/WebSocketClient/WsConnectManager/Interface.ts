@@ -1,7 +1,8 @@
 
 
 
-export const EXP_MAX_TIME = 60;
+export const EXP_MAX_TIME = 60_000;
+export const TIMEOUT_TIME = 6000;
 
 export const ConnectStatus = [
     "GetGateway",
