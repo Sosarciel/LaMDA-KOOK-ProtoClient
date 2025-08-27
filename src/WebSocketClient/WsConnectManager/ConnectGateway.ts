@@ -40,9 +40,8 @@ export async function ProcReconnect(client:WsConnectManager):Promise<ConnectStat
     const {gatewayUrl,session_id, queue} = client;
     if(gatewayUrl==null) return "GetGateway";
     if(session_id==null) return "GetGateway";
-    const lastSn = queue.getLastIdx();
     const reconnectUrl = `${gatewayUrl}&${qs.stringify({
-        resume:1, session_id, sn: lastSn==-1 ? 0 : lastSn,
+        resume:1, session_id, sn: client.getSn(),
     })}`;
     await client.cce.onclose();
     client.ws = new WebSocket(reconnectUrl);

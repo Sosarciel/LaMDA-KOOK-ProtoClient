@@ -78,4 +78,8 @@ export class WsConnectManager{
             }
         }
     }
+    getSn(){
+        const sn = this.queue.getLastIdx();
+        return sn == -1 ? 0 : sn;
+    }
 }

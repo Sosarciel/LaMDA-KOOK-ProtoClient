@@ -84,7 +84,7 @@ async function heartbeat(client:WsConnectManager){
     return result;
 }
 async function checkHeartbeat(client:WsConnectManager){
-    const csn = client.queue.getLastIdx();
+    const csn = client.getSn();
     SLogger.verbose(`${LogPrefix}尝试检查心跳 ${csn}`);
     const ws = client.ws;
     if(ws==null) {
