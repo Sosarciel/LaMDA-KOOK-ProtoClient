@@ -6,8 +6,7 @@
 	"scripts": {
 		"compile": "powershell scripts/compile",
 		"watch": "powershell scripts/watch",
-		"build": "powershell scripts/pack",
-        "pack": "powershell scripts/pack"
+		"build": "powershell scripts/pack"
 	},
 	"author": "zwa73",
 	"license": "ISC",
