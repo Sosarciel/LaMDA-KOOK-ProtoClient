@@ -44,7 +44,12 @@ export async function ProcReconnect(client:WsConnectManager):Promise<ConnectStat
         resume:1, session_id, sn: client.getSn(),
     })}`;
     await client.cce.onclose();
-    client.ws = new WebSocket(reconnectUrl);
+    try{
+        client.ws = new WebSocket(reconnectUrl);
+    }catch(err){
+        SLogger.warn(`${LogPrefix}重连失败 创建ws错误 回退至 GetGateway`,err);
+        return "GetGateway";
+    }
     const result = await seqRepeatify(
         `重连网关`,"info",
         [8,16],
