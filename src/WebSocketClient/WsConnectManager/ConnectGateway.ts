@@ -46,6 +46,10 @@ export async function ProcReconnect(client:WsConnectManager):Promise<ConnectStat
     await client.cce.onclose();
     try{
         client.ws = new WebSocket(reconnectUrl);
+        client.ws.on('error', (err) => {
+            SLogger.warn(`${LogPrefix}WebSocket 触发了底层网络错误:`, err);
+            // 这里不需要做重连逻辑，因为后面的 tryConnect 应该会通过 close 或 超时机制处理连接失败
+        });
     }catch(err){
         SLogger.warn(`${LogPrefix}重连失败 创建ws错误 回退至 GetGateway`,err);
         return "GetGateway";

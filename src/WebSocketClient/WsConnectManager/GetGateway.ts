@@ -12,6 +12,7 @@ export async function ProcGetGateway(client:WsConnectManager):Promise<ConnectSta
         ()=>getGateway(client),
         v=>typeof v == 'string');
     if(result == Terminated){
+        //但因为尝试次数为无限 所以这里应该不可达
         SLogger.error(`${LogPrefix}获取网关失败 重试到极限 客户端被放弃`);
         return "Terminate"
     }
