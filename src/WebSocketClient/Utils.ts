@@ -1,4 +1,4 @@
-import { Failed, LogLevel, sleep, Success, Terminated, Timeout, UtilFT, UtilFunc } from "@zwa73/utils";
+import { Failed, LogLevel, sleep, Success, Terminated, Timeout, UtilFunc } from "@zwa73/utils";
 import { WebSocket } from "ws";
 import { LogPrefix } from "../Constant";
 import { EXP_MAX_TIME, TIMEOUT_TIME } from "./WsConnectManager/Interface";
@@ -71,11 +71,13 @@ export const expRepeatify = async <T extends ()=>Promise<any>> (
     logFlag:string,
     logLevel:LogLevel,
     maxCount:number,
-    procfn:T,
-    verfyfn:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
+    task:T,
+    verivy:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
 ):Promise<ReturnType<T>|Terminated>=>{
-    const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
-        procfn, v=>verfyfn(v) ? Success : Failed,{
+    const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>({
+        task,
+        verify:v=>verivy(v) ? Success : Failed,
+        retry:{
             tryDelay: 2000,
             logFlag:`${LogPrefix}${logFlag}`,
             logLevel,
@@ -83,6 +85,7 @@ export const expRepeatify = async <T extends ()=>Promise<any>> (
             count: maxCount,
             expBackoffMax: EXP_MAX_TIME,
             tryInterval: TIMEOUT_TIME
+        }
     });
     if(result.completed!=undefined)
         return result.completed;
@@ -96,18 +99,21 @@ export const seqRepeatify = async <T extends ()=>Promise<any>> (
     logFlag:string,
     logLevel:LogLevel,
     timeseq:number[],
-    procfn:T,
-    verfyfn:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
+    task:T,
+    verify:((arg:Awaited<ReturnType<T>>)=>boolean|Promise<boolean>),
 ):Promise<ReturnType<T>|Terminated>=>{
     const [fst,...rest] = timeseq.map(v=>v*1000);
     await sleep(fst);
-    const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>(
-        procfn, v=>verfyfn(v) ? Success : Failed,{
+    const result = await UtilFunc.retryPromise<Awaited<ReturnType<T>>>({
+        task,
+        verify:v=>verify(v) ? Success : Failed,
+        retry:{
             tryDelay: rest,
             logFlag:`${LogPrefix}${logFlag}`,
             logLevel,
             count: timeseq.length,
             tryInterval: TIMEOUT_TIME,
+        }
     });
     if(result.completed!=undefined)
         return result.completed;

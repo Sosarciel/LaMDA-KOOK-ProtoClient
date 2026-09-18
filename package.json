@@ -1,6 +1,6 @@
 {
 	"name": "@sosraciel-lamda/kook-protoclient",
-	"version": "1.0.10",
+	"version": "1.0.11",
 	"description": "kook协议客户端api",
 	"main": "dist/index.js",
 	"scripts": {
@@ -11,9 +11,9 @@
 	"author": "zwa73",
 	"license": "ISC",
 	"dependencies": {
-		"@zwa73/js-utils": "^1.0.74",
+		"@zwa73/js-utils": "^1.0.91",
 		"@zwa73/modular-mixer": "^1.0.4",
-		"@zwa73/utils": "^1.0.280",
+		"@zwa73/utils": "^1.0.302",
 		"querystring": "^0.2.1",
 		"ws": "^8.18.0"
 	},
